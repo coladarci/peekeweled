@@ -1,0 +1,48 @@
+@import 'compass/css3'; 
+@import 'font-awesome';
+
+$gameWidth: 600px;
+$gameHeight: 600px;
+
+#game_wrapper{
+  
+  width: $gameWidth;
+  height: $gameHeight;
+  
+  position: relative;
+    
+  border: 3px solid blue;
+  
+  .square{
+    width: .125 * $gameWidth;
+    height: .125 * $gameHeight;
+    float: left;
+
+    @include box-shadow(rgba(black, 0.9) 0 0 1px 1px inset);
+    
+    &.square-one{
+      background-color: orange;
+    }
+    &.square-two{
+      background-color: blue;
+    }
+    &.square-three{
+      background-color: red;
+    }
+    &.square-four{
+      background-color: green;
+    }
+    &.square-five{
+      background-color: yellow;
+    }
+    
+    &.rendered{
+      position: absolute;
+      @include transition(all .5s)
+    }
+    
+    &.active{
+      @include scale(.5)
+    }
+  }
+}

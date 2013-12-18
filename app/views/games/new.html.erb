@@ -1,0 +1,10 @@
+<%- model_class = Game -%>
+<div class="page-header">
+  <h1><%=t '.title', :default => [:'helpers.titles.new', 'New %{model}'], :model => model_class.model_name.human.titleize %></h1>
+</div>
+
+<div id="game_wrapper">
+  <% @game.cells.split(',').each_with_index do |c, num| %>
+  <span data-num="<%= num %>" class="square square-<%= c %>"></span>
+  <% end %>
+</div>
