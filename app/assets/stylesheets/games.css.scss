@@ -14,6 +14,7 @@ $gameHeight: 600px;
   border: 3px solid blue;
   
   .square{
+    
     width: .125 * $gameWidth;
     height: .125 * $gameHeight;
     float: left;
@@ -36,14 +37,16 @@ $gameHeight: 600px;
       background-color: yellow;
     }
     
-    &.rendered{
-      position: absolute;
-      @include transition(all .5s)
-    }
-    
     &.active{
       @include transform(scale(.5) rotate(180+45deg));
-      
     }
+    &:hover{
+      @include box-shadow(rgba(black, .9) 0 0 5px 5px inset);
+    }
+  }
+  
+  &.rendered .square{//wtf sass - shouldn't have to do this (`.rendered &` should work inside .square)
+    position: absolute;
+    @include transition(all .5s)
   }
 }

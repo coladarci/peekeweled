@@ -12,4 +12,8 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require_tree .
+//= require global
+//= require classes/cell.class.js.coffee
+//= require classes/game.class.js.coffee
+
+//= require games
