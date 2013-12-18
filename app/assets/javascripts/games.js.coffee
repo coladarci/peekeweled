@@ -3,4 +3,4 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
   
 $ ->
-  window.peekeweled_instance = new window.Peekeweled.classes.Game($("#game_wrapper"))
+  new window.Peekeweled.classes.Game($("#game_wrapper"))

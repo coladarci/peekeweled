@@ -61,7 +61,7 @@ class Cell
       if selected.length == 2
         success = @constructor.switchSquares(selected[0],selected[1])
         if success
-          #delay 1000, updateBoard
+          delay 1000, @constructor.updateBoard
         else
           @setActive(false)
       else if selected.length > 2
@@ -120,6 +120,11 @@ Cell.areNeighbors = (el1,el2) ->
     if value == el2
       found = true
   found
+
+Cell.updateBoard = ->
+    
+    
  
+  
 window.namespace "Peekeweled.classes", (exports) ->
   exports.Cell = Cell
