@@ -1,18 +1,17 @@
-@import 'compass/css3'; 
-@import 'font-awesome';
-
-$gameWidth: 600px;
-$gameHeight: 600px;
+$gameWidth: 400px;
+$gameHeight: 400px;
 
 #game_wrapper{
+  width: $gameWidth+30;
+}
+
+#game_board{
   
   width: $gameWidth;
   height: $gameHeight;
   
   position: relative;
     
-  border: 3px solid blue;
-  
   .square{
     
     width: .125 * $gameWidth;
@@ -43,6 +42,11 @@ $gameHeight: 600px;
     &:hover{
       @include box-shadow(rgba(black, .9) 0 0 5px 5px inset);
     }
+    &.exploded{
+      height: 0px;
+      opacity: 0;
+    }
+    
   }
   
   &.rendered .square{//wtf sass - shouldn't have to do this (`.rendered &` should work inside .square)

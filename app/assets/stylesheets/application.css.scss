@@ -1,0 +1,18 @@
+//compass config
+@import 'compass/css3'; 
+@import 'compass/typography/text/replacement';
+@import "compass/typography/vertical_rhythm";
+
+//app variables, including bootstrap's
+@import 'variables';
+
+//custom fonts
+@import 'font-awesome';
+
+//boostrap
+@import 'bootstrap';
+
+//site-wide styles (nav, etc)
+@import 'global';
+
+@import 'games';

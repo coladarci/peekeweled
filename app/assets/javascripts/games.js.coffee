@@ -3,4 +3,4 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
   
 $ ->
-  new window.Peekeweled.classes.Game($("#game_wrapper"))
+  new window.Peekeweled.classes.Game($("#game_board"))
