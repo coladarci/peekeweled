@@ -7,7 +7,7 @@ class Game < ActiveRecord::Base
     
     def generate_cells
       cells = []
-      options = [:one, :two, :three, :four, :five]
+      options = [:one, :two, :three, :four, :five, :six]
       64.times { |c| cells << options.sample }
       self.cells = cells.join(",")
     end

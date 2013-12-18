@@ -27,6 +27,9 @@ class Game
     
     @constructor.GAMES.push(@)
     
+    delay 500, -> 
+      Cell.updateBoard()
+    
     $(window).on 'cells_cleared', (e,num) =>
       @incScore(num)
  

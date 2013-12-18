@@ -1,11 +1,11 @@
 $gameWidth: 400px;
 $gameHeight: 400px;
 
-#game_wrapper{
+.game_wrapper{
   width: $gameWidth+30;
 }
 
-#game_board{
+.game_board{
   
   width: $gameWidth;
   height: $gameHeight;
@@ -35,6 +35,9 @@ $gameHeight: 400px;
     &.square-five{
       background-color: yellow;
     }
+    &.square-six{
+      background-color: pink;
+    }
     
     &.active{
       @include transform(scale(.5) rotate(180+45deg));
@@ -43,7 +46,7 @@ $gameHeight: 400px;
       @include box-shadow(rgba(black, .9) 0 0 5px 5px inset);
     }
     &.exploded{
-      height: 0px;
+      #height: 0px;
       opacity: 0;
     }
     

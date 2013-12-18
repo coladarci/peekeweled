@@ -3,4 +3,5 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
   
 $ ->
-  new window.Peekeweled.classes.Game($("#game_board"))
+  $('.game_board').each ->
+    new window.Peekeweled.classes.Game($(this))

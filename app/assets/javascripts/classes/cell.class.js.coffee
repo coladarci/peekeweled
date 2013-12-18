@@ -8,6 +8,8 @@ class Cell
     
     if (!@constructor.CELL_SIZE )
       @constructor.CELL_SIZE = @el.width()
+    if (!@constructor.WRAPPER_HEIGHT )
+      @constructor.WRAPPER_HEIGHT= $wrapperHeight
     
     #run through floated grid and "lock in" position absolutely
     #this coculd be done other ways but this allows the potential for using floats to our advantage for fluidness
@@ -40,9 +42,16 @@ class Cell
   setLeft: (v) ->
     @el.attr('data-left',v)
     @el.css('left', v + "px")
-
+  getCol: ->
+    @el.attr('data-col')*1
+  setCol: (v) ->
+    @el.attr('data-col', v)
+  getRow: ->
+    @el.attr('data-row')*1
+  setRow: (v) ->
+    @el.attr('data-row', v)
   isActive: ->
-    return @active == true
+    @active == true
   setActive: (v) ->
     @active = v
     if v
@@ -55,15 +64,21 @@ class Cell
   getType: ->
     @el.attr('data-type')
     
+  isExploded: ->
+    @exploded == true
   explode: ->
     @el.addClass('exploded')
+    @exploded = true
+    @constructor.CELLS.splice(@constructor.CELLS.indexOf(@),1)
     delay 500, =>
       @el.remove()
-      remaining = []
-      for key,value of @constructor.CELLS
-        if value.getId() != @getId()
-          remaining.push(value)
-       @constructor.CELLS = remaining
+
+
+  fallTo: (rowId) ->
+    
+    @setRow(rowId)
+    @setBottom(@constructor.WRAPPER_HEIGHT - (@constructor.CELL_SIZE * rowId))
+    
   click: () ->
     
     if (@isActive())
@@ -92,17 +107,29 @@ Cell.getActive = ->
 
 Cell.switchSquares = (el1, el2) ->
   
+    
     bottom1 = el1.getBottom()
     bottom2 = el2.getBottom()
     left1 = el1.getLeft()
     left2 = el2.getLeft()
+    col1 = el1.getCol()
+    col2 = el2.getCol()
+    row1 = el1.getRow()
+    row2 = el2.getRow()
     
     if @areNeighbors(el1,el2)
       el1.setBottom(bottom2)
       el1.setLeft(left2)
+      el1.setCol(col2)
+      el1.setRow(row2)
+      
       el2.setBottom(bottom1)
       el2.setLeft(left1)
-
+      el2.setCol(col1)
+      el2.setRow(row1)
+      
+      @sortCells()
+      
       delay 200, => 
         @clearActive()
                 
@@ -153,7 +180,7 @@ Cell.removeClusters = (cells) ->
       value.explode()
       addOnce(value)
       for n in neighbors
-          do ->
+          do =>
             n.explode()
             addOnce(n)
             
@@ -162,19 +189,65 @@ Cell.updateBoard = ->
     rounds = 0
     numRemoved = true
     totalRemoved = 0
-    cells = @CELLS
-
-    while numRemoved > 0
+    
+    doRemove = (cells) =>
       removed = @removeClusters(cells)
+      
+      console.log("Just removed ", removed.length)
+      
       numRemoved = removed.length
-      cells = []
-      for key,value of @CELLS
-        cells.push(value) unless removed.indexOf(value.getId()) >= 0  
-
       totalRemoved += numRemoved
+
       $(window).trigger('cells_cleared', numRemoved)
       rounds++
+
+      if numRemoved > 0
+        
+        @addNewCells()
+
+        delay 500, =>
+          doRemove(@CELLS)
+    
+    doRemove(@CELLS)
+    
+    true
+
+Cell.getByCol = ->
+  cols = {}
+
+  for key,value of @CELLS
+
+    unless cols[value.getCol()]
+      cols[value.getCol()] = []
     
     
+    cols[value.getCol()].push(value) unless value.isExploded() == true
+  
+  cols
+  
+Cell.sortCells = ->
+  @CELLS.sort (a,b) ->
+    if (a.getRow() == b.getRow())
+      return a.getCol() - b.getCol()
+    else
+      return a.getRow() - b.getRow()
+
+    result
+    
+Cell.addNewCells = ->
+  
+    cols = @getByCol()
+    
+    #at this point we have the cells grouped by columns
+    for colNum,cells of cols
+      numNeeded = 8 - cells.length
+      count = 8
+      for rowNum,cell of cells.reverse()
+         cell.fallTo(count--)
+        
+        
+      console.log("Col #{colNum} needs #{numNeeded} more!")
+
+
 window.namespace "Peekeweled.classes", (exports) ->
   exports.Cell = Cell
