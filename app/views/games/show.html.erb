@@ -1,23 +1,43 @@
-<%- model_class = Game -%>
-<div class="page-header">
-  <h1><%=t '.title', :default => model_class.model_name.human.titleize %></h1>
+<div class="panel panel-default center-block game_wrapper">
+  <div class="panel-heading">Score: <span id="score"><%= @game.score.nil? ? 0 : @game.score %></span></div>
+  <div class="panel-body">
+    <div class="game_board" data-user-id="<%= current_user.id %>">
+      <% @game.cells.split(',').each_with_index do |c, num| %>
+      <a href="#" data-col="<%= num%8 + 1 %>" data-row="<%= num/8 + 1 %>" data-type="<%= c %>" data-num="<%= num %>" class="square square-<%= c %>"></a>
+      <% end %>
+    </div>
+    <script type="text/javascript" charset="utf-8">
+      window.Peekeweled.classes.Cell.setCellBank("<%= @game.id %>", "<%= @game.allCells %>");
+    </script>
+  </div>
+   <div class="panel-footer">
+     <%= form_for @game, :html => { :class => 'form-horizontal' } do |f| %>
+       
+       <%= f.hidden_field :score, value: "1" %>
+       <%= f.hidden_field :cells, value: "1" %>
+       
+       <%= f.submit "End Game", :class => 'btn btn-danger', :text => "" %>
+    
+     <% end %>
+
+     <%= form_for @game, :html => { :class => 'form-horizontal hidden-form-submission' }, remote: true do |f| %>
+       
+       <%= f.hidden_field :score, value: "1" %>
+       <%= f.hidden_field :cells, value: "1" %>
+       
+     <% end %>
+   </div>
 </div>
 
-<dl class="dl-horizontal">
-  <dt><strong><%= model_class.human_attribute_name(:user_id) %>:</strong></dt>
-  <dd><%= @game.user_id %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:score) %>:</strong></dt>
-  <dd><%= @game.score %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:length) %>:</strong></dt>
-  <dd><%= @game.length %></dd>
-</dl>
-
-<%= link_to t('.back', :default => t("helpers.links.back")),
-              games_path, :class => 'btn btn-default'  %>
-<%= link_to t('.edit', :default => t("helpers.links.edit")),
-              edit_game_path(@game), :class => 'btn btn-default' %>
-<%= link_to t('.destroy', :default => t("helpers.links.destroy")),
-              game_path(@game),
-              :method => 'delete',
-              :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
-              :class => 'btn btn-danger' %>
+<!--
+<div class="panel panel-default pull-right center-block game_wrapper">
+  <div class="panel-heading">Score: <span id="score">0</span></div>
+  <div class="panel-body">
+    <div class="game_board" data-user-id="<%= current_user.id %>">
+      <% @game.cells.split(',').each_with_index do |c, num| %>
+      <a href="#" data-col="<%= num%8 + 1 %>" data-row="<%= num/8 + 1 %>" data-type="<%= c %>" data-num="<%= num %>" class="square square-<%= c %>"></a>
+      <% end %>
+    </div>
+  </div>
+</div>
+-->

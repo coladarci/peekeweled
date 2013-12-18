@@ -2,7 +2,9 @@ class GamesController < ApplicationController
   
   before_action :signed_in_user
   
-  before_action :set_game, only: [:show, :edit, :update, :destroy]
+  before_action :set_game, only: [:show, :edit, :update, :destroy, :end]
+  
+  before_action :owner, only: [:update]
 
   # GET /games
   # GET /games.json
@@ -17,7 +19,8 @@ class GamesController < ApplicationController
 
   # GET /games/new
   def new
-    @game = Game.create
+    @game = current_user.games.create()
+    redirect_to game_path(@game)
   end
 
   # GET /games/1/edit
@@ -39,17 +42,22 @@ class GamesController < ApplicationController
       end
     end
   end
-
+  
   # PATCH/PUT /games/1
   # PATCH/PUT /games/1.json
   def update
+    puts "DID I GET HERE?"
+    if params[:commit] == 'End Game'
+      @game.ended_at = Time.current()
+    end
+    
     respond_to do |format|
       if @game.update(game_params)
-        format.html { redirect_to @game, notice: 'Game was successfully updated.' }
-        format.json { head :no_content }
+        format.js
+        format.html { redirect_to user_path }
       else
-        format.html { render action: 'edit' }
         format.json { render json: @game.errors, status: :unprocessable_entity }
+        format.html { render action: 'edit' }
       end
     end
   end
@@ -59,7 +67,7 @@ class GamesController < ApplicationController
   def destroy
     @game.destroy
     respond_to do |format|
-      format.html { redirect_to games_url }
+      format.html { redirect_to user_path }
       format.json { head :no_content }
     end
   end
@@ -72,6 +80,10 @@ class GamesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def game_params
-      params.require(:game).permit(:user_id, :score, :length)
+      params.require(:game).permit(:user_id, :score, :length, :cells)
+    end
+    
+    def owner
+      redict_to root_path unless @game.user == current_user
     end
 end

@@ -1,0 +1,32 @@
+<h1>Oh hayyy, <%= @user.name %>!</h1>
+<p class="lead">Here are some of your top scores</p>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Score</th>
+      <th>Started</th>
+      <th>Ended</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @user.games.each do |game| %>
+      <tr>
+        <td>
+              <%= link_to("Finish", game_path(game), class: "btn btn-primary btn-xs") if game.ended_at.nil? %>
+              <%= link_to('Delete', game_path(game), :method => :delete, :class => 'btn btn-xs btn-danger') if game.ended_at.nil?%>
+        </td>
+        <td><%= game.score %></td>
+        <td><%= time_ago_in_words(game.created_at) %> ago</td>
+        <td><%= time_ago_in_words(game.ended_at) unless game.ended_at.nil? %> ago</td>
+        <td>
+          
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to "Start A New Game!", new_game_path, :class => 'btn btn-primary' %>

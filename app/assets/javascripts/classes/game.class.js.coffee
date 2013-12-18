@@ -10,13 +10,14 @@ class Game
     @squares = []
     @user = @wrapper.attr('data-user-id') * 1
     
-    score = 0
+    score = $("#score").html()*1
 
     @getScore = ->
       score
     @incScore = (v) ->
       score += v
       $("#score").html(score)
+      $("[name='game[score]']").val(score)
     
     wrapperHeight =  @wrapper.height()
     @wrapper.find('.square').each (i,s) =>
@@ -28,7 +29,7 @@ class Game
     @constructor.GAMES.push(@)
     
     delay 500, -> 
-      #Cell.updateBoard()
+      Cell.updateBoard()
     
     $(window).on 'cells_cleared', (e,num) =>
       @incScore(num)

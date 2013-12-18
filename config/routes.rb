@@ -1,6 +1,10 @@
 Peekeweled::Application.routes.draw do
   
-  resources :games
+  get "/user" => "user#show"
+  
+  resources :games do
+    member { post :end }
+  end
 
   root 'static_pages#home'
   

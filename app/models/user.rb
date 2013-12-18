@@ -1,5 +1,7 @@
 class User < ActiveRecord::Base
   
+  has_many :games, -> { order('score DESC, id desc').limit(10) }
+    
   def self.from_omniauth(auth)
     where(auth.slice("provider", "uid")).first || create_from_omniauth(auth)
   end

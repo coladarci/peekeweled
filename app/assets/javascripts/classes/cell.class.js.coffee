@@ -119,7 +119,7 @@ Cell.switchSquares = (el1, el2) ->
     row1 = el1.getRow()
     row2 = el2.getRow()
     
-    if @areNeighbors(el1,el2)
+    if true || @areNeighbors(el1,el2)
       el1.setBottom(bottom2)
       el1.setLeft(left2)
       el1.setCol(col2)
@@ -143,8 +143,11 @@ Cell.clearActive = ->
   for key,value of @getActive()
     value.setActive(false)
   
-Cell.getNeighbors = (cell,requireSameType) ->
+Cell.getNeighbors = (cell,requireSameType, ignore) ->
   
+  if (!ignore)
+    ignore = []
+
   bottom = cell.getBottom()
   left = cell.getLeft()
   
@@ -153,9 +156,16 @@ Cell.getNeighbors = (cell,requireSameType) ->
   for key,value of @CELLS
     if ((value.getBottom() >= bottom-@CELL_SIZE && value.getBottom() <= bottom+@CELL_SIZE) && value.getLeft() == left ||
         (value.getLeft() >= left-@CELL_SIZE && value.getLeft() <= left+@CELL_SIZE) && value.getBottom() == bottom)
-      if (!requireSameType || (requireSameType && cell.getType() == value.getType()))
+      if ((!requireSameType || (requireSameType && cell.getType() == value.getType())) &&
+          ignore.indexOf(cell.getId()) == -1)
+          
         neighbors.push value unless value == cell
-      
+  
+  #if (neighbors.length > 1)
+  #  for key,value of neighbors
+  #    neighbors.concat @getNeighbors(value,true, neighbors)
+  #  
+  #console.log(cell.getId() + " has " + neighbors.length + " neighbors")
   neighbors
 
 Cell.areNeighbors = (el1,el2) ->
@@ -207,6 +217,14 @@ Cell.updateBoard = ->
         
         delay 750, =>
           doRemove(@CELLS)
+          
+      else
+        values = []
+        for key,value of @CELLS
+          values.push(value.getType())
+
+        $("[name='game[cells]']").val(values.join(','))
+        $(".hidden-form-submission").submit()
     
     doRemove(@CELLS)
     
@@ -249,12 +267,12 @@ Cell.collapseCells = ->
         @addCellsToCol(colNum, numNeeded)
 
 Cell.addCellsToCol = (col,num) ->
-  console.log("Looking to add #{col} to #{num}")
+
   for i in [num..1] by -1
     options = ['one','two','three','four','five','six']
     pick = options[Math.floor(Math.random()*options.length)]
       
-    newEl = new Cell($('<a data-type="'+pick+'" class="square square-'+pick+' on-deck">'))
+    newEl = new Cell($('<a data-num="'+(Date.now())+'" data-type="'+pick+'" class="square square-'+pick+' on-deck">'))
 
     newEl.el.prependTo('.game_board')
     
@@ -268,6 +286,9 @@ Cell.addCellsToCol = (col,num) ->
     
   
   @sortCells()
-  
+
+Cell.setCellBank = (gameId, cells) ->
+  #coming soon.
+
 window.namespace "Peekeweled.classes", (exports) ->
   exports.Cell = Cell
