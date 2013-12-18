@@ -10,6 +10,7 @@ $gameHeight: 400px;
   width: $gameWidth;
   height: $gameHeight;
   
+  overflow: hidden;
   position: relative;
     
   .square{
@@ -47,7 +48,11 @@ $gameHeight: 400px;
     }
     &.exploded{
       #height: 0px;
-      opacity: 0;
+      display:none;
+    }
+    
+    &.on-deck{
+      @include transition(none !important)
     }
     
   }

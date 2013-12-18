@@ -45,10 +45,12 @@ class Cell
   getCol: ->
     @el.attr('data-col')*1
   setCol: (v) ->
+    @setLeft(@constructor.CELL_SIZE * (v-1))
     @el.attr('data-col', v)
   getRow: ->
     @el.attr('data-row')*1
   setRow: (v) ->
+    @setBottom(@constructor.WRAPPER_HEIGHT - (@constructor.CELL_SIZE * v))
     @el.attr('data-row', v)
   isActive: ->
     @active == true
@@ -193,8 +195,6 @@ Cell.updateBoard = ->
     doRemove = (cells) =>
       removed = @removeClusters(cells)
       
-      console.log("Just removed ", removed.length)
-      
       numRemoved = removed.length
       totalRemoved += numRemoved
 
@@ -203,9 +203,9 @@ Cell.updateBoard = ->
 
       if numRemoved > 0
         
-        @addNewCells()
-
-        delay 500, =>
+        @collapseCells()
+        
+        delay 750, =>
           doRemove(@CELLS)
     
     doRemove(@CELLS)
@@ -234,7 +234,7 @@ Cell.sortCells = ->
 
     result
     
-Cell.addNewCells = ->
+Cell.collapseCells = ->
   
     cols = @getByCol()
     
@@ -244,10 +244,30 @@ Cell.addNewCells = ->
       count = 8
       for rowNum,cell of cells.reverse()
          cell.fallTo(count--)
-        
-        
-      console.log("Col #{colNum} needs #{numNeeded} more!")
+      
+      if numNeeded > 0
+        @addCellsToCol(colNum, numNeeded)
 
+Cell.addCellsToCol = (col,num) ->
+  console.log("Looking to add #{col} to #{num}")
+  for i in [num..1] by -1
+    options = ['one','two','three','four','five','six']
+    pick = options[Math.floor(Math.random()*options.length)]
+      
+    newEl = new Cell($('<a data-type="'+pick+'" class="square square-'+pick+' on-deck">'))
 
+    newEl.el.prependTo('.game_board')
+    
+    newEl.setCol(col)
+    newEl.setRow(i-5)
+    newEl.el.removeClass('on-deck')
+    
+    do (newEl, i) ->
+      delay 0, ->
+        newEl.setRow(i)
+    
+  
+  @sortCells()
+  
 window.namespace "Peekeweled.classes", (exports) ->
   exports.Cell = Cell
