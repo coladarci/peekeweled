@@ -42,7 +42,8 @@ $gameHeight: 600px;
     }
     
     &.active{
-      @include scale(.5)
+      @include transform(scale(.5) rotate(180+45deg));
+      
     }
   }
 }

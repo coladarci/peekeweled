@@ -6,8 +6,8 @@ Pekewled = {}
 
 getNeighbors = (cell) ->
   cellSize = cell.width()*1
-  top = cell.data('top')*1
-  left = cell.data('left')*1
+  top = cell.attr('data-top')*1
+  left = cell.attr('data-left')*1
   
   selectors = [ '[data-top="'+Math.round(top+cellSize)+'"][data-left="'+left+'"]',
                 '[data-top="'+Math.round(top-cellSize)+'"][data-left="'+left+'"]',
@@ -50,7 +50,7 @@ switchSquares = (elements) ->
     el2.attr("data-top",   top1)
     el2.attr("data-left",  left1)
 
-    delay 500, -> elements.removeClass('active')
+    delay 200, -> elements.removeClass('active')
     return true
   else
     return false
