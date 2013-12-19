@@ -31,8 +31,9 @@ class Game
     delay 500, -> 
       Cell.updateBoard()
     
-    $(window).on 'cells_cleared', (e,num) =>
-      @incScore(num)
+    $(window).on 'cells_cleared', (e,num,rounds) =>
+      console.log(arguments)
+      @incScore(num*rounds)
  
   
 window.namespace "Peekeweled.classes", (exports) ->

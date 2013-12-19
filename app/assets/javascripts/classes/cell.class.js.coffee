@@ -207,9 +207,10 @@ Cell.updateBoard = ->
       
       numRemoved = removed.length
       totalRemoved += numRemoved
-
-      $(window).trigger('cells_cleared', numRemoved)
       rounds++
+      
+      $(window).trigger('cells_cleared',[numRemoved, rounds])
+      
 
       if numRemoved > 0
         
@@ -219,6 +220,8 @@ Cell.updateBoard = ->
           doRemove(@CELLS)
           
       else
+        @sortCells()
+
         values = []
         for key,value of @CELLS
           values.push(value.getType())

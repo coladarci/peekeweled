@@ -16,7 +16,8 @@
        <%= f.hidden_field :score, value: "1" %>
        <%= f.hidden_field :cells, value: "1" %>
        
-       <%= f.submit "End Game", :class => 'btn btn-danger', :text => "" %>
+       <%= link_to raw("<i class='fa fa-arrow-left'></i> Back"), user_path, :class => 'btn btn-primary' %>
+       <%= f.submit "End Game", :class => 'btn btn-danger pull-right', :text => "" %>
     
      <% end %>
 

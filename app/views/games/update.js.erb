@@ -1,1 +1,2 @@
-$("#high_score").html("<%= current_user.games.first.score %>");
+$("#user_highscore").html("<%= escape_javascript(render('shared/user_highscore')) %>");
+

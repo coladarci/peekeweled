@@ -1,0 +1,5 @@
+<%= current_user.name %>
+ <% unless current_user.games.empty? || current_user.games.first.score == 0 %>
+   (High Score: <span id="high_score"><%= current_user.games.first.score %></span>) 
+  <% end%>
+<b class="caret"></b>

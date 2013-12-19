@@ -11,7 +11,10 @@ class Game < ActiveRecord::Base
       64.times { |c| cells << options.sample }
       self.cells = cells.join(",")
       
+      self.score = 0
+      
       self.save
+      
       #I want to generate all the cells up front so I can see how two people play the exact same game
       #think head to head play could be kinda cool.
       #cells = []
