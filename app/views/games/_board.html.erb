@@ -1,4 +1,4 @@
-<div class="panel panel-default center-block game_wrapper <%= position %>">
+<div class="panel panel-default center-block game_wrapper <%= current_user == game.user ? 'owner' : 'guest' %>">
   <div class="panel-heading">
     <%= render 'score', game: game %>
   </div>
@@ -12,22 +12,24 @@
       window.Peekeweled.classes.Cell.setCellBank("<%= game.id %>", "<%= game.allCells %>");
     </script>
   </div>
+  <% if game.user == current_user %>
    <div class="panel-footer">
      <%= form_for game, :html => { :class => 'form-horizontal' } do |f| %>
-       
+     
        <%= f.hidden_field :score, value: "1" %>
        <%= f.hidden_field :cells, value: "1" %>
-       
+     
        <%= link_to raw("<i class='fa fa-arrow-left'></i> Back"), user_path, :class => 'btn btn-primary' %>
        <%= f.submit "End Game", :class => 'btn btn-danger pull-right', :text => "" %>
-    
+  
      <% end %>
 
      <%= form_for game, :html => { :class => 'form-horizontal hidden-form-submission' }, remote: true do |f| %>
-       
+     
        <%= f.hidden_field :score, value: "1" %>
        <%= f.hidden_field :cells, value: "1" %>
-       
+     
      <% end %>
    </div>
+   <% end %>
 </div>

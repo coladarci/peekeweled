@@ -1,3 +1,13 @@
-<%= render 'games/board', game: @game, position: 'pull-left' %>
 
-<%= render 'games/board', game: @game2, position: 'pull-right' %>
+
+<div class="col-md-5">
+  <%= render 'games/board', game: @game %>
+</div>
+
+<div class="col-md-2 text-center">
+  <a href="#" id="start" class="btn btn-primary">START</a>
+</div>
+
+<div class="col-md-5">
+  <%= render 'games/board', game: @game2 %>
+</div>

@@ -30,9 +30,10 @@ class Game
     
     @constructor.GAMES.push(@)
     
-    delay 500, => 
+    $("#start").click =>
+      $(this).hide()
       Cell.updateBoard(@game)
-    
+
     $(window).on 'cells_cleared', (e,game,num,rounds) =>
       @incScore(num*rounds) if game == @game
  

@@ -1,0 +1,25 @@
+<div class="col-md-6">
+  <h1>Dual Mode!</h1>
+
+  <p class="alert alert-info">
+    <b>Warning.</b> I'm not going to pretend that duals weren't thrown together extremely quickly out of excitement for getting some real-time websocket peekeweled on.
+    Dual's should have their own model, controllers, etc - this is not the "rails way"
+    <br /><br />
+    THAT SAID, they will be dope.
+  </p>
+  
+  <%= form_for :dual, :url => create_dual_path, :method => "post", :html => {  } do |f| %>
+
+  <div class="form-group">
+    <div class="controls">
+      <%= select_tag :partner_id, options_from_collection_for_select(@users, "id", "name"), :prompt => 'Select A User To Challenge', class: 'form-control' %>
+    </div>
+  </div>
+  <div class="form-group">
+    <%= f.submit "Create Dual", :class => 'btn btn-primary' %>
+    <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+              user_path, :class => 'btn btn-default' %>
+   </div>
+  <% end %>
+
+</div>

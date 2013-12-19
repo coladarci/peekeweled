@@ -28,8 +28,11 @@ class GamesController < ApplicationController
   end
   
   def new_dual
+    @users = User.where('id != ?', current_user.id)  
+  end
+  def create_dual
     @game = current_user.games.create()
-    @game2 = current_user.games.create()
+    @game2 = User.find(params[:partner_id]).games.create()
     @game2.cells = @game.cells
     @game2.save
     redirect_to game_dual_path(@game,@game2)    
