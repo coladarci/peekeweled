@@ -4,12 +4,28 @@ class Cell
   
   #we store all cells here so we are hitting the dom as little as possible
   @CELLS = {}
+  #store upcoming cells to ensure in Dual mode both people have the same board (assuming they make the same moves)
   @BANK = {}
   
   constructor: ($el, $wrapperHeight, gameId) ->
+    ###
+      Common trend - nearly every method takes a GameId - 
+      Only glaring architectural disaster. Anything requiring a GameId should be moved into the game class.
+      Cells should (dumb) and only be responsible for:
+        - drawing
+        - moving
+        - destroying
+    
+      The reason it's this way is because these GameIds only came around when I added Dual Mode where
+      I need two games at once.
+    ###
+
     @el = $el 
     @game = gameId
     
+    ###
+      Cache the cell size and wrapper height; used in calculations
+    ###
     if (!@constructor.CELL_SIZE )
       @constructor.CELL_SIZE = @el.width()
     if (!@constructor.WRAPPER_HEIGHT )
@@ -27,13 +43,16 @@ class Cell
       "data-left": offset.left 
     })
 
+    #cool trick to link the instance to the dom element.
     @el.data('obj', @)
         
+    #simply pass the click event on
     @el.on 
         click: (e) =>
             @click()
             false
     
+    #finally, store the reference of the cell
     if !@constructor.CELLS[gameId] 
       @constructor.CELLS[gameId] = []
 
@@ -42,7 +61,12 @@ class Cell
 
   
   
-    
+  ###
+    Whole crap load of setters and getters
+    TODO: setRow and setCol now call the more granular methods, those granular methods can either be combined
+    or made private. Easy, but needs careful refactoring.
+    The goal is to never have to do anything other than @setRow(1) or @setCol(2) and have the css change accordingly
+  ###
   getBottom: () ->
     @el.attr('data-bottom')*1
   getLeft: () ->
@@ -92,6 +116,16 @@ class Cell
     @setRow(rowId)
     @setBottom(@constructor.WRAPPER_HEIGHT - (@constructor.CELL_SIZE * rowId))
     
+  ###
+    The heart of the action:
+    When you click on something
+     - toggle it's active state
+     - check how many are active
+        - if a switch is in order, do it
+          - if the switch is valid, collapse the cells
+          - if cells are collapsed, add new cells
+            - repeat 'recurssively' until there are no cells cleared
+  ###
   click: () ->
 
     if (@isActive())
@@ -111,13 +145,9 @@ class Cell
       else if selected.length > 2
         console.log("Too many active: ", selected )
     
-Cell.getActive = (game)->
-  active = []
-  for key,value of Peekeweled.classes.Cell.CELLS[game]
-      active.push(value) if value.isActive()
-      
-  active
-
+###
+  Switch two squares
+###
 Cell.switchSquares = (el1, el2) ->
   
     
@@ -149,11 +179,12 @@ Cell.switchSquares = (el1, el2) ->
       return true
     else
       return false
-  
-Cell.clearActive = (game)->
-  for key,value of @getActive(game)
-    value.setActive(false)
-  
+
+
+
+###
+  Get a square's neighbors - if `requireSameType` is passed in, return only neighbors matching the type
+###
 Cell.getNeighbors = (cell,requireSameType) ->
   
   bottom = cell.getBottom()
@@ -179,6 +210,11 @@ Cell.getNeighbors = (cell,requireSameType) ->
   #console.log(cell.getId() + " has " + neighbors.length + " neighbors")
   neighbors
 
+
+###
+  Helper to check if two cells are neighbors, wraps Class.getNeighbors.
+  TODO: look into caching neighbors and blowing the cache on Cells.sort
+###
 Cell.areNeighbors = (el1,el2) ->
   
   neighbors = @getNeighbors(el1)
@@ -189,6 +225,14 @@ Cell.areNeighbors = (el1,el2) ->
       found = true
   found
 
+
+###
+  The heart of the clearing logic 
+    - loop through every cell
+    - count it's neighbors
+    - more than 2? Add to the list of cells that should be cleared.
+    - when done, clear those cells and return the cells cleared so we can keep the process going until no cells were cleared
+###
 Cell.removeClusters = (cells) ->
   
   removed= []
@@ -211,6 +255,10 @@ Cell.removeClusters = (cells) ->
     n.explode()
     
   toRemove
+
+###
+  After a move, run through the board recursively repeating the collapse,addCells process until nothign's cleared
+###
 Cell.updateBoard = (game) ->
     rounds = 0
     numRemoved = true
@@ -249,6 +297,28 @@ Cell.updateBoard = (game) ->
     
     true
 
+
+
+###
+  THESE ARE HELPERS THAT SHOULD BE MOVED TO GAME CLASS AS THEY REQUIRE A GAME ID
+###
+
+
+#Return all cells for a given game that are active - could easily be cached for performance 
+#(i.e save a reference to an active square instead of marking a square as active)
+Cell.getActive = (game)->
+  active = []
+  for key,value of Peekeweled.classes.Cell.CELLS[game]
+      active.push(value) if value.isActive()
+      
+  active
+
+#mark all as inactive - happens after the update board process
+Cell.clearActive = (game)->
+  for key,value of @getActive(game)
+    value.setActive(false)
+  
+#sort the cells by col so we can add cells by col 
 Cell.getByCol = (game) ->
   cols = {}
 
@@ -261,7 +331,9 @@ Cell.getByCol = (game) ->
     cols[value.getCol()].push(value) unless value.isExploded() == true
   
   cols
-  
+
+#extremely import method that keeps the cells in order of how they appear so looping works logically. 
+#Called whenver a change occurs
 Cell.sortCells = (game) ->
   @CELLS[game].sort (a,b) ->
     if (a.getRow() == b.getRow())
@@ -270,7 +342,8 @@ Cell.sortCells = (game) ->
       return a.getRow() - b.getRow()
 
     result
-    
+
+#After a clear, collapse the cells down
 Cell.collapseCells = (game) ->
   
     cols = @getByCol(game)
@@ -284,7 +357,8 @@ Cell.collapseCells = (game) ->
       
       if numNeeded > 0
         @addCellsToCol(game, colNum, numNeeded)
-
+        
+#After a collapse, add more cells
 Cell.addCellsToCol = (game, col,num) ->
 
   for i in [num..1] by -1
@@ -305,6 +379,7 @@ Cell.addCellsToCol = (game, col,num) ->
   
   @sortCells(game)
 
+#Called when the server embeds the GameBoard. This is so that in a dual mode, both teams have the same exact conditions.
 Cell.setCellBank = (game, cells) ->
   @BANK[game] = cells.split(',')
 
