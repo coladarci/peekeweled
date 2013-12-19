@@ -1,8 +1,8 @@
 <h1>Oh hayyy, <%= @user.name %>!</h1>
-
+<hr />
 <div class="row">
   <div class="col-md-6">
-    <p class="lead">Here are some of your top scores</p>
+    <p class="lead">Your Top Scores</p>
     <table class="table table-striped">
       <tbody>
         <% @user.games.each do |game| %>
@@ -23,7 +23,7 @@
   </div>
 
   <div class="col-md-6">
-    <p class="lead">And of course, the all time leader board</p>
+    <p class="lead">All-Time Leaders</p>
     <table class="table table-striped">
       <tbody>
         <% @leaderboard.each do |game| %>

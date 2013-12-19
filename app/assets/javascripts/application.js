@@ -18,4 +18,5 @@
 //= require classes/cell.class.js.coffee
 //= require classes/game.class.js.coffee
 
+//= require static_pages
 //= require games
