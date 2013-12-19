@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131218225145) do
+ActiveRecord::Schema.define(version: 20131219060002) do
 
   create_table "games", force: true do |t|
     t.integer  "user_id"
@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 20131218225145) do
     t.datetime "updated_at"
     t.text     "allCells"
     t.datetime "ended_at"
+    t.integer  "dual_id"
   end
 
   add_index "games", ["user_id"], name: "index_games_on_user_id"

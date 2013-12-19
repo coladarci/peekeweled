@@ -4,3 +4,4 @@
 
 $ ->
   $("[data-title]").popover()
+  $("#email").attr('href', "mailto:coladarci@gmail.com")

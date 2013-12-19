@@ -7,11 +7,12 @@
       <tbody>
         <% @user.games.each do |game| %>
           <tr>
+            <td><i title="<%= game.dual_id.nil? ? '' : 'Dual Mode' %>" class='fa fa-<%= game.dual_id.nil? ? '' : 'group' %>'></i></td>
             <td><%= time_ago_in_words(game.updated_at) %> ago</td>
             <td><%= game.score %> pts</td>
             <td>
-                  <%= link_to("Finish", game_path(game), class: "btn btn-primary btn-xs") if game.ended_at.nil? %>
-                  <%= link_to('Delete', game_path(game), :method => :delete, :class => 'btn btn-xs btn-danger') if game.ended_at.nil?%>
+                  <%= link_to(raw("<i class='fa fa-play'></i> &nbsp;&nbsp;Continue"), game_path(game), class: "btn btn-primary btn-xs") if game.ended_at.nil? %>
+                  <%= link_to(raw("<i class='fa fa-times'></i> &nbsp;&nbsp;Delete"), game_path(game), :method => :delete, :class => 'btn btn-xs btn-danger') if game.ended_at.nil?%>
             </td>
           </tr>
         <% end %>
@@ -20,7 +21,7 @@
 
     <%= link_to "Challenge A Friend!", new_dual_path, :class => 'btn btn-success' %>
     
-    <%= link_to "Play With yourself.", new_game_path, :class => 'btn btn-default' %>
+    <%= link_to "Play By Yourself.", new_game_path, :class => 'btn btn-default' %>
     
     
     <br /><br />
@@ -28,10 +29,11 @@
 
   <div class="col-md-6">
     <p class="lead">All-Time Leaders</p>
-    <table class="table table-striped">
+    <table class="table">
       <tbody>
-        <% @leaderboard.each do |game| %>
-          <tr>
+        <% @leaderboard.each_with_index do |game,num| %>
+          <tr class="<%= game.user == current_user ? 'success' : '' %>">
+            <td>#<%= num+1 %></td>
             <td><%= game.user.name %>
             <td><%= time_ago_in_words(game.updated_at) %> ago</td>
             <td><%= game.score %> pts</td>

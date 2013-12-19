@@ -4,7 +4,7 @@ class UserController < ApplicationController
   before_action :set_user, only: [:show]
   
   def show
-    @leaderboard = Game.all.group('user_id, games.id').order("score desc")
+    @leaderboard = Game.all.group('user_id, games.id').order("score desc").limit(10)
   end
   
   private

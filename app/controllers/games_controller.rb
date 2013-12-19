@@ -15,6 +15,9 @@ class GamesController < ApplicationController
   # GET /games/1
   # GET /games/1.json
   def show
+    unless @game.dual_id.nil?
+      redirect_to game_dual_path(@game,Game.find(@game.dual_id))
+    end
   end
   
   def dual
@@ -32,10 +35,9 @@ class GamesController < ApplicationController
   end
   def create_dual
     @game = current_user.games.create()
-    @game2 = User.find(params[:partner_id]).games.create()
-    @game2.cells = @game.cells
-    @game2.allCells = @game.allCells
-    @game2.save
+    @game2 = User.find(params[:partner_id]).games.create({dual_id: @game.id, cells: @game.cells, allCells: @game.allCells})
+    @game.dual_id = @game2.id
+    @game.save
     
     redirect_to game_dual_path(@game,@game2), notice: "Game Created! You should probably manually send your friend this link."   
   end

@@ -13,7 +13,7 @@
   <!-- Collect the nav links, forms, and other content for toggling -->
   <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
     <form class="navbar-form navbar-left" role="login">
-      <a target="_blank" href="https://github.com/coladarci/peekeweled" class="btn btn-md btn-default"><i class="fa fa-lg fa-github"></i> See The Code</a>
+      <a target="_blank" href="https://github.com/coladarci/peekeweled" class="btn btn-md btn-default"><i class="fa fa-lg fa-github"></i> &nbsp;See The Code</a>
     </form>
     <% if current_user %>
     <ul class="nav navbar-nav navbar-right">
@@ -22,11 +22,19 @@
             <%= render 'shared/user_highscore' %>
           </a>
           <ul class="dropdown-menu">
-            <%= active_link_to "High Scores", user_path, :wrap_tag => :li %>
-            <%= active_link_to 'New Game', new_game_path, :wrap_tag => :li %>
-            <%= active_link_to "About", about_path, :wrap_tag => :li %>
+            <%= active_link_to raw("<i class='fa fa-list'></i> &nbsp;&nbsp;High Scores"), user_path, :wrap_tag => :li %>
+            <%= active_link_to raw("<i class='fa fa-plus'></i> &nbsp;&nbsp;New Classic Game"), new_game_path, :wrap_tag => :li %>
+            <%= active_link_to raw("<i class='fa fa-group'></i> &nbsp;&nbsp;New Dual Game"), new_dual_path, :wrap_tag => :li %>
+            <%= active_link_to raw("<i class='fa fa-question'></i> &nbsp;&nbsp;About"), about_path, :wrap_tag => :li %>
             <li class="divider"></li>
-            <li><%= link_to "Sign out", signout_path %></li>
+            <li>
+              <a target="_blank" href="http://www.linkedin.com/profile/view?id=28591308" class=""><i class="fa fa-linkedin"></i> &nbsp;&nbsp;LinkedIn</a>
+            </li>
+            <li>
+              <a id="email" target="_blank" href="" class=""><i class="fa fa-pencil"></i> &nbsp;&nbsp;Email</a>
+            </li>
+            <li class="divider"></li>
+            <li><%= link_to raw("<i class='fa fa-times'></i> &nbsp;&nbsp;Sign Out"), signout_path %></li>
           </ul>
         </li>
     </ul>
