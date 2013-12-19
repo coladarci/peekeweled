@@ -1,1 +1,1 @@
-Score: <span id="score_game_<%= game.id %>"><%= game.score.nil? ? 0 : game.score %></span>
+<%= game.user == current_user ? raw("<b>YOUR SCORE:</b>") : game.user.name %> <span id="score_game_<%= game.id %>"><%= game.score.nil? ? 0 : game.score %></span>

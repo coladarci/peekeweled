@@ -4,12 +4,14 @@ Cell = Peekeweled.classes.Cell
 class Game
   @GAMES = []
   
-  @SOCKET = io.connect("http://lady.local:8081", { secure: false, reconnect: true })
+  @SOCKET = io.connect("http://peekeweled.nodejitsu.com:80", { secure: false, reconnect: true })
   
   @SOCKET.on 'click', (d) ->
-    console.log d
     el = $("[data-game-id='"+d.game+"'] [data-col='"+d.col+"'][data-row='"+d.row+"']")
     el.data('obj').click();
+  
+  @SOCKET.on 'ready', (d) ->
+    console.log(d, 'is ready')
   
   constructor: (@wrapper) ->
     
@@ -55,7 +57,8 @@ class Game
       @incScore(num*rounds) if game == @game
     
     
-    @constructor.SOCKET.emit('set room', @socketRoom)
+    @constructor.SOCKET.emit('set room', window.location.href.split('/games/')[1].split("#")[0])
+    @constructor.SOCKET.emit('ready', @game)
     
   
 window.namespace "Peekeweled.classes", (exports) ->

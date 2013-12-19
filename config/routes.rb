@@ -2,7 +2,7 @@ Peekeweled::Application.routes.draw do
   
   get "/user" => "user#show"
   
-  get "/dual" => 'games#new_dual'
+  get "/dual" => 'games#new_dual', as: :new_dual
   post "/dual" => 'games#create_dual', as: :create_dual
   
   resources :games do

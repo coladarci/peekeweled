@@ -24,22 +24,22 @@ $gameHeight: 400px;
 
     @include box-shadow(rgba(black, 0.9) 0 0 1px 1px inset);
     
-    &.square-one{
+    &.square-a{
       background-color: orange;
     }
-    &.square-two{
+    &.square-b{
       background-color: blue;
     }
-    &.square-three{
+    &.square-c{
       background-color: red;
     }
-    &.square-four{
+    &.square-d{
       background-color: green;
     }
-    &.square-five{
+    &.square-e{
       background-color: yellow;
     }
-    &.square-six{
+    &.square-f{
       background-color: pink;
     }
     

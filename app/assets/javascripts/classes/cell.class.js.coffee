@@ -4,6 +4,7 @@ class Cell
   
   #we store all cells here so we are hitting the dom as little as possible
   @CELLS = {}
+  @BANK = {}
   
   constructor: ($el, $wrapperHeight, gameId) ->
     @el = $el 
@@ -287,13 +288,12 @@ Cell.collapseCells = (game) ->
 Cell.addCellsToCol = (game, col,num) ->
 
   for i in [num..1] by -1
-    options = ['one','two','three','four','five','six']
-    pick = options[Math.floor(Math.random()*options.length)]
-      
+
+    pick = @BANK[game].shift()
+
     newEl = new Cell($('<a data-num="'+(Date.now())+'" data-type="'+pick+'" class="square square-'+pick+' on-deck">'), false,game)
 
     newEl.el.prependTo('[data-game-id="'+game+'"]')
-    
     newEl.setCol(col)
     newEl.setRow(i-5)
     newEl.el.removeClass('on-deck')
@@ -305,8 +305,8 @@ Cell.addCellsToCol = (game, col,num) ->
   
   @sortCells(game)
 
-Cell.setCellBank = (gameId, cells) ->
-  #coming soon.
+Cell.setCellBank = (game, cells) ->
+  @BANK[game] = cells.split(',')
 
 window.namespace "Peekeweled.classes", (exports) ->
   exports.Cell = Cell

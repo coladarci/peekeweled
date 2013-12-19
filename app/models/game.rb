@@ -7,7 +7,7 @@ class Game < ActiveRecord::Base
     
     def generate_cells
       cells = []
-      options = [:one, :two, :three, :four, :five, :six]
+      options = [:a, :b, :c, :d, :e, :f]
       
       #some logic to make sure that only boards that don't have a ton of connecting pieces
       lastRow = false
@@ -26,13 +26,14 @@ class Game < ActiveRecord::Base
       
       self.score = 0
       
-      self.save
       
-      #I want to generate all the cells up front so I can see how two people play the exact same game
-      #think head to head play could be kinda cool.
-      #cells = []
-      #400.times { |c| cells << options.sample }
-      #self.allCells = cells.join(',')
+      
+      #I want to generate all the upcoming cells up front so that in dual mode they are fare games
+      cells = []
+      600.times { |c| cells << options.sample }
+      self.allCells = cells.join(',')
+      
+      self.save
           
     end
 end
