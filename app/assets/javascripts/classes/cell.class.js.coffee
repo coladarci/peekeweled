@@ -364,17 +364,20 @@ Cell.addCellsToCol = (game, col,num) ->
   for i in [num..1] by -1
 
     pick = @BANK[game].shift()
-
-    newEl = new Cell($('<a data-num="'+(Date.now())+'" data-type="'+pick+'" class="square square-'+pick+' on-deck">'), false,game)
-
-    newEl.el.prependTo('[data-game-id="'+game+'"]')
-    newEl.setCol(col)
-    newEl.setRow(i-5)
-    newEl.el.removeClass('on-deck')
     
-    do (newEl, i) ->
-      delay 0, ->
-        newEl.setRow(i)
+    if pick
+      newEl = new Cell($('<a data-num="'+(Date.now())+'" data-type="'+pick+'" class="square square-'+pick+' on-deck">'), false,game)
+
+      newEl.el.prependTo('[data-game-id="'+game+'"]')
+      newEl.setCol(col)
+      newEl.setRow(i-5)
+      newEl.el.removeClass('on-deck')
+    
+      do (newEl, i) ->
+        delay 0, ->
+          newEl.setRow(i)
+    else
+      alert("Whoops. We are out of pieces. This is the only major outstanding bug and relatively easy to fix") 
     
   
   @sortCells(game)

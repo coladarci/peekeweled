@@ -79,7 +79,7 @@ class Game
     delay 0, => @wrapper.addClass("rendered")
     
     #Saving a reference to the game
-    @constructor.GAMES.push(@)
+    #@constructor.GAMES.push(@)
     
     #Not in use yet, but will be helpful in dual mode to signal that a player is ready to start
     ###

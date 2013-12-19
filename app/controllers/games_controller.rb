@@ -36,12 +36,22 @@ class GamesController < ApplicationController
     @users = User.where('id != ?', current_user.id)  
   end
   def create_dual
-    @game = current_user.games.create()
-    @game2 = User.find(params[:partner_id]).games.create({dual_id: @game.id, cells: @game.cells, allCells: @game.allCells})
-    @game.dual_id = @game2.id
-    @game.save
+
+    #This validation is not the rails way - as mentioned in a few places.
+    #Duals should be refactored out of games and have their own model
     
-    redirect_to game_dual_path(@game,@game2), notice: "Game Created! You should probably manually send your friend this link."   
+    unless params[:partner_id].empty?
+      @game = current_user.games.create()
+      @game2 = User.find(params[:partner_id]).games.create({dual_id: @game.id, cells: @game.cells, allCells: @game.allCells})
+      @game.dual_id = @game2.id
+      @game.save
+      redirect_to game_dual_path(@game,@game2), notice: "Game Created! You should probably manually send your friend this link."   
+    else
+      flash[:error] = 'Please Select A User To Challange'
+      redirect_to new_dual_path
+      
+    end
+    
   end
 
   # GET /games/1/edit
