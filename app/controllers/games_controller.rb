@@ -16,7 +16,9 @@ class GamesController < ApplicationController
   # GET /games/1.json
   def show
     unless @game.dual_id.nil?
-      redirect_to game_dual_path(@game,Game.find(@game.dual_id))
+      @game2 = Game.find(@game.dual_id)
+      #want the lower number first so that it's consistant as we are basing the websocket chat off of the url
+      redirect_to @game.id > @game2.id ? game_dual_path(@game2,@game) : game_dual_path(@game,@game2)
     end
   end
   
