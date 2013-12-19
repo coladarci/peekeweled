@@ -8,7 +8,20 @@ class Game < ActiveRecord::Base
     def generate_cells
       cells = []
       options = [:one, :two, :three, :four, :five, :six]
-      64.times { |c| cells << options.sample }
+      
+      #some logic to make sure that only boards that don't have a ton of connecting pieces
+      lastRow = false
+      
+      64.times do |c| 
+        
+        begin
+          sample = options.sample
+        end while sample == lastRow
+        
+        lastRow = sample
+        cells << sample
+      end
+      
       self.cells = cells.join(",")
       
       self.score = 0

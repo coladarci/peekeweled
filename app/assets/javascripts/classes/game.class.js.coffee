@@ -32,7 +32,6 @@ class Game
       Cell.updateBoard()
     
     $(window).on 'cells_cleared', (e,num,rounds) =>
-      console.log(arguments)
       @incScore(num*rounds)
  
   

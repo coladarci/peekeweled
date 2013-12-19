@@ -3,8 +3,11 @@ class StaticPagesController < ApplicationController
     if current_user
       redirect_to user_path
     else
-      redirect_to signin_path
+      redirect_to about_path
     end
+  end
+  def about
+
   end
   def signin
   end

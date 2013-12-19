@@ -1,6 +1,8 @@
 delay = window.Peekeweled.helpers.delay
   
 class Cell
+  
+  #we store all cells here so we are hitting the dom as little as possible
   @CELLS = []
   
   constructor: ($el, $wrapperHeight) ->
@@ -96,7 +98,8 @@ class Cell
           delay 1000, =>
              @constructor.updateBoard()
         else
-          @setActive(false)
+          selected[0].setActive(false)
+
       else if selected.length > 2
         console.log("Too many active: ", selected )
     
@@ -119,7 +122,7 @@ Cell.switchSquares = (el1, el2) ->
     row1 = el1.getRow()
     row2 = el2.getRow()
     
-    if true || @areNeighbors(el1,el2)
+    if @areNeighbors(el1,el2)
       el1.setBottom(bottom2)
       el1.setLeft(left2)
       el1.setCol(col2)
@@ -143,22 +146,22 @@ Cell.clearActive = ->
   for key,value of @getActive()
     value.setActive(false)
   
-Cell.getNeighbors = (cell,requireSameType, ignore) ->
+Cell.getNeighbors = (cell,requireSameType) ->
   
-  if (!ignore)
-    ignore = []
-
   bottom = cell.getBottom()
   left = cell.getLeft()
   
   neighbors = []
 
   for key,value of @CELLS
+    #and then this happened -
+    # not as bad as it looks.
+    # - same col? pick one within a row above or row below 
+    # - same row? pick one within a col on either side
+    # - only looking for neighbors of the same type, add that in at the end
     if ((value.getBottom() >= bottom-@CELL_SIZE && value.getBottom() <= bottom+@CELL_SIZE) && value.getLeft() == left ||
         (value.getLeft() >= left-@CELL_SIZE && value.getLeft() <= left+@CELL_SIZE) && value.getBottom() == bottom)
-      if ((!requireSameType || (requireSameType && cell.getType() == value.getType())) &&
-          ignore.indexOf(cell.getId()) == -1)
-          
+      if (!requireSameType || (requireSameType && cell.getType() == value.getType()))        
         neighbors.push value unless value == cell
   
   #if (neighbors.length > 1)
@@ -180,23 +183,26 @@ Cell.areNeighbors = (el1,el2) ->
 
 Cell.removeClusters = (cells) ->
   
-  removed = []
+  removed= []
+  toRemove = []
   
   addOnce = (v) ->
-    removed.push(v.getId()) unless removed.indexOf(v.getId()) > -1
-  
+    unless removed.indexOf(v.getId()) > -1
+      removed.push(v.getId()) 
+      toRemove.push(v)  
   
   for key,value of cells
     neighbors = @getNeighbors(value, true)
     if (neighbors.length >= 2)
-      value.explode()
       addOnce(value)
       for n in neighbors
           do =>
-            n.explode()
             addOnce(n)
-            
-  removed
+  
+  for n in toRemove
+    n.explode()
+    
+  toRemove
 Cell.updateBoard = ->
     rounds = 0
     numRemoved = true
@@ -216,7 +222,7 @@ Cell.updateBoard = ->
         
         @collapseCells()
         
-        delay 750, =>
+        delay 350, =>
           doRemove(@CELLS)
           
       else

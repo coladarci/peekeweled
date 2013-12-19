@@ -17,7 +17,6 @@
     </form>
     <% if current_user %>
     <ul class="nav navbar-nav navbar-right">
-       
         <li class="dropdown">
           <a href="#" id="user_highscore" class="secondary-nav-toggle" data-toggle="dropdown">
             <%= render 'shared/user_highscore' %>
@@ -25,6 +24,7 @@
           <ul class="dropdown-menu">
             <%= active_link_to "High Scores", user_path, :wrap_tag => :li %>
             <%= active_link_to 'New Game', new_game_path, :wrap_tag => :li %>
+            <%= active_link_to "About", about_path, :wrap_tag => :li %>
             <li class="divider"></li>
             <li><%= link_to "Sign out", signout_path %></li>
           </ul>

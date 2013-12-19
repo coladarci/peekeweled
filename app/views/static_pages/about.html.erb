@@ -1,0 +1,17 @@
+
+<div class="jumbotron">
+  <h1>Hi, Peek! <small>#codechallenge #ftw</small></h1>
+  <p>
+      I built this over the course of the day for your <a href="http://www.peek.com/jobs/challenge1" target="_blank">code challenge.</a></p>
+      <p>
+      With the exception of <a href="#" data-html="true" data-placement="right" data-title="It's always something.." data-content="Update: this has been fixed. But I'm keeping this GIF around for when the next one pops up <br /> <br /> <img src='http://media.giphy.com/media/4xp6i71R08hAA/giphy.gif' style='width: 100%;' /> ">one bug</a> (I just noticed), I'm pretty proud of it!</div>
+  
+  </p>
+  <p>
+    <% if current_user %>
+    <%= link_to "User Profile", user_path, class: "btn btn-mg btn-primary" %>
+    <% else %>
+    <a href="/auth/twitter" class="btn btn-md btn-primary"><i class="fa fa-lg fa-twitter"></i> Get Started!</a>
+    <% end %>
+  </p>
+</div>
