@@ -25,7 +25,9 @@ class Cell
       "data-bottom": bottom,
       "data-left": offset.left 
     })
-    
+
+    @el.data('obj', @)
+        
     @el.on 
         click: (e) =>
             @click()
@@ -35,6 +37,8 @@ class Cell
       @constructor.CELLS[gameId] = []
 
     @constructor.CELLS[gameId].push(@)
+    
+
   
   
     
@@ -88,14 +92,13 @@ class Cell
     @setBottom(@constructor.WRAPPER_HEIGHT - (@constructor.CELL_SIZE * rowId))
     
   click: () ->
-    
+
     if (@isActive())
       @setActive(false)
     else
       @setActive(true)
 
       selected = @constructor.getActive(@game)
-
       if selected.length == 2
         success = @constructor.switchSquares(selected[0],selected[1])
         if success

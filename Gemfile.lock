@@ -211,6 +211,8 @@ GEM
       rdoc (~> 3.10)
     simple_oauth (0.2.0)
     slop (3.4.7)
+    socket.io-rails (0.9.16)
+      railties (>= 3.1)
     sprockets (2.10.1)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -273,6 +275,7 @@ DEPENDENCIES
   rspec-rails
   sass-rails (~> 4.0.0)
   sdoc
+  socket.io-rails
   sqlite3
   twitter (~> 5.1.1)
   twitter-bootstrap-rails!

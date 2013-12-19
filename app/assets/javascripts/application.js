@@ -14,6 +14,8 @@
 //= require jquery_ujs
 //= require bootstrap
 
+//= require socket.io
+
 //= require global
 //= require classes/cell.class.js.coffee
 //= require classes/game.class.js.coffee
