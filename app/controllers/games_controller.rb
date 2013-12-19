@@ -34,8 +34,10 @@ class GamesController < ApplicationController
     @game = current_user.games.create()
     @game2 = User.find(params[:partner_id]).games.create()
     @game2.cells = @game.cells
+    @game2.allCells = @game.allCells
     @game2.save
-    redirect_to game_dual_path(@game,@game2)    
+    
+    redirect_to game_dual_path(@game,@game2), notice: "Game Created! You should probably manually send your friend this link."   
   end
 
   # GET /games/1/edit
