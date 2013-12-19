@@ -2,7 +2,7 @@ class GamesController < ApplicationController
   
   before_action :signed_in_user
   
-  before_action :set_game, only: [:show, :edit, :update, :destroy, :end]
+  before_action :set_game, only: [:show, :edit, :update, :destroy, :dual]
   
   before_action :owner, only: [:update]
 
@@ -16,11 +16,23 @@ class GamesController < ApplicationController
   # GET /games/1.json
   def show
   end
+  
+  def dual
+    @game2 = Game.find(params[:game_two_id])
+  end
 
   # GET /games/new
   def new
     @game = current_user.games.create()
     redirect_to game_path(@game)
+  end
+  
+  def new_dual
+    @game = current_user.games.create()
+    @game2 = current_user.games.create()
+    @game2.cells = @game.cells
+    @game2.save
+    redirect_to game_dual_path(@game,@game2)    
   end
 
   # GET /games/1/edit
@@ -46,7 +58,6 @@ class GamesController < ApplicationController
   # PATCH/PUT /games/1
   # PATCH/PUT /games/1.json
   def update
-    puts "DID I GET HERE?"
     if params[:commit] == 'End Game'
       @game.ended_at = Time.current()
     end
@@ -75,7 +86,7 @@ class GamesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_game
-      @game = Game.find(params[:id])
+      @game = Game.find(params[:game_id] ||= params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

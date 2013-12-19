@@ -2,8 +2,11 @@ Peekeweled::Application.routes.draw do
   
   get "/user" => "user#show"
   
+  get "/dual" => 'games#new_dual'
+  
   resources :games do
     member { post :end }
+    get ":game_two_id" => 'games#dual', as: :dual
   end
 
   root 'static_pages#home'

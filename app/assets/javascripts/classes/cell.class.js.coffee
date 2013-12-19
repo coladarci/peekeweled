@@ -3,10 +3,11 @@ delay = window.Peekeweled.helpers.delay
 class Cell
   
   #we store all cells here so we are hitting the dom as little as possible
-  @CELLS = []
+  @CELLS = {}
   
-  constructor: ($el, $wrapperHeight) ->
+  constructor: ($el, $wrapperHeight, gameId) ->
     @el = $el 
+    @game = gameId
     
     if (!@constructor.CELL_SIZE )
       @constructor.CELL_SIZE = @el.width()
@@ -30,7 +31,10 @@ class Cell
             @click()
             false
     
-    @constructor.CELLS.push(@)
+    if !@constructor.CELLS[gameId] 
+      @constructor.CELLS[gameId] = []
+
+    @constructor.CELLS[gameId].push(@)
   
   
     
@@ -73,7 +77,7 @@ class Cell
   explode: ->
     @el.addClass('exploded')
     @exploded = true
-    @constructor.CELLS.splice(@constructor.CELLS.indexOf(@),1)
+    @constructor.CELLS[@game].splice(@constructor.CELLS[@game].indexOf(@),1)
     delay 500, =>
       @el.remove()
 
@@ -90,22 +94,22 @@ class Cell
     else
       @setActive(true)
 
-      selected = @constructor.getActive()
+      selected = @constructor.getActive(@game)
 
       if selected.length == 2
         success = @constructor.switchSquares(selected[0],selected[1])
         if success
           delay 1000, =>
-             @constructor.updateBoard()
+             @constructor.updateBoard(@game)
         else
           selected[0].setActive(false)
 
       else if selected.length > 2
         console.log("Too many active: ", selected )
     
-Cell.getActive = ->
+Cell.getActive = (game)->
   active = []
-  for key,value of Peekeweled.classes.Cell.CELLS
+  for key,value of Peekeweled.classes.Cell.CELLS[game]
       active.push(value) if value.isActive()
       
   active
@@ -133,17 +137,17 @@ Cell.switchSquares = (el1, el2) ->
       el2.setCol(col1)
       el2.setRow(row1)
       
-      @sortCells()
+      @sortCells(el1.game)
       
       delay 200, => 
-        @clearActive()
+        @clearActive(el1.game)
                 
       return true
     else
       return false
   
-Cell.clearActive = ->
-  for key,value of @getActive()
+Cell.clearActive = (game)->
+  for key,value of @getActive(game)
     value.setActive(false)
   
 Cell.getNeighbors = (cell,requireSameType) ->
@@ -153,7 +157,7 @@ Cell.getNeighbors = (cell,requireSameType) ->
   
   neighbors = []
 
-  for key,value of @CELLS
+  for key,value of @CELLS[cell.game]
     #and then this happened -
     # not as bad as it looks.
     # - same col? pick one within a row above or row below 
@@ -203,7 +207,7 @@ Cell.removeClusters = (cells) ->
     n.explode()
     
   toRemove
-Cell.updateBoard = ->
+Cell.updateBoard = (game) ->
     rounds = 0
     numRemoved = true
     totalRemoved = 0
@@ -215,34 +219,36 @@ Cell.updateBoard = ->
       totalRemoved += numRemoved
       rounds++
       
-      $(window).trigger('cells_cleared',[numRemoved, rounds])
+      $(window).trigger('cells_cleared',[game,numRemoved, rounds])
       
 
       if numRemoved > 0
         
-        @collapseCells()
+        @collapseCells(game)
         
         delay 350, =>
-          doRemove(@CELLS)
+          doRemove(@CELLS[game])
           
       else
-        @sortCells()
+        @sortCells(game)
 
         values = []
-        for key,value of @CELLS
+        for key,value of @CELLS[game]
           values.push(value.getType())
 
-        $("[name='game[cells]']").val(values.join(','))
-        $(".hidden-form-submission").submit()
+        $("#edit_game_"+game+" [name='game[cells]']").each ->
+          $(this).val(values.join(','))
+
+        $("#edit_game_"+game+".hidden-form-submission").submit()
     
-    doRemove(@CELLS)
+    doRemove(@CELLS[game])
     
     true
 
-Cell.getByCol = ->
+Cell.getByCol = (game) ->
   cols = {}
 
-  for key,value of @CELLS
+  for key,value of @CELLS[game]
 
     unless cols[value.getCol()]
       cols[value.getCol()] = []
@@ -252,8 +258,8 @@ Cell.getByCol = ->
   
   cols
   
-Cell.sortCells = ->
-  @CELLS.sort (a,b) ->
+Cell.sortCells = (game) ->
+  @CELLS[game].sort (a,b) ->
     if (a.getRow() == b.getRow())
       return a.getCol() - b.getCol()
     else
@@ -261,10 +267,10 @@ Cell.sortCells = ->
 
     result
     
-Cell.collapseCells = ->
+Cell.collapseCells = (game) ->
   
-    cols = @getByCol()
-    
+    cols = @getByCol(game)
+
     #at this point we have the cells grouped by columns
     for colNum,cells of cols
       numNeeded = 8 - cells.length
@@ -273,17 +279,17 @@ Cell.collapseCells = ->
          cell.fallTo(count--)
       
       if numNeeded > 0
-        @addCellsToCol(colNum, numNeeded)
+        @addCellsToCol(game, colNum, numNeeded)
 
-Cell.addCellsToCol = (col,num) ->
+Cell.addCellsToCol = (game, col,num) ->
 
   for i in [num..1] by -1
     options = ['one','two','three','four','five','six']
     pick = options[Math.floor(Math.random()*options.length)]
       
-    newEl = new Cell($('<a data-num="'+(Date.now())+'" data-type="'+pick+'" class="square square-'+pick+' on-deck">'))
+    newEl = new Cell($('<a data-num="'+(Date.now())+'" data-type="'+pick+'" class="square square-'+pick+' on-deck">'), false,game)
 
-    newEl.el.prependTo('.game_board')
+    newEl.el.prependTo('[data-game-id="'+game+'"]')
     
     newEl.setCol(col)
     newEl.setRow(i-5)
@@ -294,7 +300,7 @@ Cell.addCellsToCol = (col,num) ->
         newEl.setRow(i)
     
   
-  @sortCells()
+  @sortCells(game)
 
 Cell.setCellBank = (gameId, cells) ->
   #coming soon.
