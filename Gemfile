@@ -11,6 +11,8 @@ gem "compass-rails", "1.1.2"
 gem 'bootstrap-sass', '~> 3.0'
 gem 'font-awesome-sass'
 
+gem 'socket.io-rails'
+
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 
